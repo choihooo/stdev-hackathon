@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Claude/GStack
+.claude/
+.gstack/
+
+# Vercel
+.vercel/
+
+# Root-level non-essential files (not part of build)
+/bg.jpeg
+/Focus.png
+/buns.png
+/clonestartup.png
+/copycat.png
+/eye.png
+/founder-marketing.png
+/founder-ops.png
+/founder-tech.png
+/funding.png
+/funds.png
+/hacker.png
+/headhunters.png
+/heal.png
+/ipprevent.png
+/logo-unicorn.png
+/monopoly.png
+/muscle.png
+/pivot.png
+/redtape.png
+/scaleup.png
+/seriesA.png
+/sheild.png
+/speed.png
+/troll.png
+/uniconslaer.png
+/DESIGN.md
+/wireframe.html
+/TalkFile_unicorn_slayer_function_spec_detailed.pdf.pdf
+/Unicorn_Slayer_Advanced_PRD_v3.pdf
+/images/
+/docs/
+/src/

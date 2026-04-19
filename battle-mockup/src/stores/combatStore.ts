@@ -212,17 +212,21 @@ export const useCombatStore = create<CombatState>((set, get) => ({
     }))
 
     // 사용 가능한 카드가 없으면 자동 턴 종료
-    const remainingHand = useDeckStore.getState().getHandData()
-    const currentFocus = usePlayerStore.getState().focus
-    const canPlayAny = remainingHand.some((c) => c.cost <= currentFocus)
-    if (!canPlayAny) {
-      useToastStore.getState().showToast('사용 가능한 카드가 없습니다', 'info')
-      setTimeout(() => {
-        if (get().phase === 'player_turn') {
-          get().endTurn()
-        }
-      }, 800)
-    }
+    // focus_refill, draw 효과로 상황이 바뀔 수 있으므로 잠시 대기 후 재확인
+    setTimeout(() => {
+      if (get().phase !== 'player_turn') return
+      const hand = useDeckStore.getState().getHandData()
+      const focus = usePlayerStore.getState().focus
+      const canPlay = hand.some((c) => c.cost <= focus)
+      if (!canPlay && hand.length > 0) {
+        useToastStore.getState().showToast('사용 가능한 카드가 없습니다', 'info')
+        setTimeout(() => {
+          if (get().phase === 'player_turn') {
+            get().endTurn()
+          }
+        }, 600)
+      }
+    }, 300)
 
     return true
   },
