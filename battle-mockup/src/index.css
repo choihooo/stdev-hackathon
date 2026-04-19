@@ -1,0 +1,68 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+:root {
+  --bg-primary: #08090d;
+  --bg-secondary: #11131a;
+  --bg-tertiary: #1a1d2b;
+  --bg-elevated: #222639;
+
+  --accent-cyan: #4a9ead;
+  --accent-green: #3d9e6e;
+  --accent-red: #c4454a;
+  --accent-gold: #c9a84c;
+  --accent-purple: #7a5cad;
+  --accent-amber: #c48a3f;
+
+  --type-attack: #c4454a;
+  --type-heal: #3d9e6e;
+  --type-passive: #c48a3f;
+  --type-utility: #4a9ead;
+  --type-risk: #7a5cad;
+
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898bb;
+  --text-muted: #6a6a8a;
+  --text-danger: #c4454a;
+  --text-success: #3d9e6e;
+  --text-cyan: #5a9eaa;
+  --text-green: #5aae7e;
+  --text-gold: #c9a84c;
+
+  --font-display: 'Pretendard', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --font-number: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --card-width: 120px;
+  --card-height: 170px;
+  --card-radius: 10px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--font-display);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Mobile (768px 이하) ===== */
+@media (max-width: 768px) {
+  :root {
+    --card-width: 80px;
+    --card-height: 115px;
+  }
+}

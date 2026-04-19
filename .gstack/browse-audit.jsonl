@@ -1,0 +1,2 @@
+{"ts":"2026-04-18T08:31:05.081Z","cmd":"goto","args":"file:///tmp/gstack-sketch-1776500899.html","origin":"about:blank","durationMs":6,"status":"error","hasCookies":false,"mode":"launched","error":"Blocked: scheme \"file:\" is not allowed. Only http: and https: URLs are permitted."}
+{"ts":"2026-04-18T08:31:08.219Z","cmd":"screenshot","args":"/tmp/gstack-sketch.png","origin":"about:blank","durationMs":68,"status":"ok","hasCookies":false,"mode":"launched"}

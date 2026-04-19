@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unicorn Slayer - Battle Wireframe</title>
+<style>
+/* DESIGN DECISION: Dark cyberpunk-fintech aesthetic.
+   Neon cyan/green accents on near-black backgrounds.
+   Cards should feel premium TCG - gold borders for rare,
+   glow for legendary. Layout follows Slay the Spire pattern
+   adapted for mobile-first web. */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a0f;
+  color: #e0e0e0;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* === TOP RESOURCE BAR === */
+/* Shows Funds (HP), Burn Rate, Stage, Focus, Deck info */
+.resource-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+  border-bottom: 1px solid #2a2a4a;
+  height: 52px;
+}
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.resource-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.funds-icon { background: #2ecc71; color: #000; }
+.focus-icon { background: #3498db; color: #fff; }
+.burn-icon { background: #e74c3c; color: #fff; }
+.stage-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.deck-info {
+  font-size: 12px;
+  color: #888;
+}
+
+/* === DANGER GAUGE === */
+/* Prominently displayed, increases tension */
+.danger-gauge-container {
+  padding: 4px 16px;
+  background: #0f0f1a;
+}
+.danger-gauge {
+  height: 6px;
+  background: #1a1a2e;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.danger-fill {
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, #f39c12, #e74c3c);
+  border-radius: 3px;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+.danger-label {
+  font-size: 10px;
+  color: #f39c12;
+  text-align: right;
+  margin-top: 2px;
+  font-weight: 600;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* === ENEMY PANEL (CENTER) === */
+/* Boss info: name, type, HP, next attack, buffs */
+.enemy-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+}
+.enemy-aura {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,76,60,0.15) 0%, transparent 70%);
+  animation: aura-pulse 3s ease-in-out infinite;
+}
+@keyframes aura-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+.enemy-body {
+  width: 140px;
+  height: 140px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2c3e50, #1a252f);
+  border: 2px solid #e74c3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  position: relative;
+  z-index: 1;
+}
+.enemy-info {
+  margin-top: 12px;
+  text-align: center;
+  z-index: 1;
+}
+.enemy-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+.enemy-type {
+  font-size: 11px;
+  color: #e74c3c;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+.enemy-hp-bar {
+  width: 220px;
+  height: 8px;
+  background: #1a1a2e;
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.enemy-hp-fill {
+  height: 100%;
+  width: 65%;
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
+  border-radius: 4px;
+}
+.enemy-hp-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Next attack intent */
+.intent {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+.intent-icon { font-size: 16px; }
+.intent-text { font-size: 12px; color: #e74c3c; font-weight: 600; }
+.intent-damage { font-size: 14px; color: #fff; font-weight: 700; }
+
+/* Enemy buffs */
+.enemy-buffs {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+.buff-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #1a1a2e;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* === COMBAT LOG (LEFT) === */
+/* Recent 10 actions */
+.combat-log {
+  position: absolute;
+  left: 12px;
+  top: 120px;
+  width: 200px;
+  background: rgba(15, 15, 26, 0.9);
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.log-entry { color: #888; padding: 2px 0; border-bottom: 1px solid #1a1a2e; }
+.log-entry.damage { color: #e74c3c; }
+.log-entry.heal { color: #2ecc71; }
+.log-entry.buff { color: #f39c12; }
+.log-entry.debuff { color: #9b59b6; }
+
+/* === PLAYER STATUS (RIGHT) === */
+.player-status {
+  position: absolute;
+  right: 12px;
+  top: 120px;
+  width: 180px;
+  background: rgba(15, 15, 26, 0.9);
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 8px;
+}
+.status-title {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 12px;
+}
+.status-icon { font-size: 16px; }
+.status-name { color: #ccc; flex: 1; }
+.status-turns { color: #f39c12; font-weight: 600; font-size: 11px; }
+
+/* Shield display */
+.shield-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 6px;
+}
+.shield-icon { font-size: 16px; }
+.shield-value { font-size: 16px; color: #3498db; font-weight: 700; }
+
+/* === CARD HAND AREA === */
+/* Bottom of screen, cards fanned out */
+.hand-area {
+  height: 180px;
+  background: linear-gradient(0deg, #1a1a2e 0%, #0f0f1a80 100%);
+  border-top: 1px solid #2a2a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 8px;
+  perspective: 1000px;
+}
+
+.card {
+  width: 100px;
+  height: 150px;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #1e1e30, #14142a);
+  border: 2px solid #3a3a5a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-20px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+/* Card cost (top-left) */
+.card-cost {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #3498db;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card type icon */
+.card-type-icon {
+  font-size: 20px;
+  margin-top: 4px;
+}
+
+/* Card name */
+.card-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-top: 6px;
+  line-height: 1.2;
+}
+
+/* Card description */
+.card-desc {
+  font-size: 8px;
+  color: #999;
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* Card value */
+.card-value {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Rarity borders */
+.card.common { border-color: #4a4a6a; }
+.card.rare { border-color: #3498db; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
+.card.rare .card-cost { background: #2980b9; }
+.card.epic { border-color: #9b59b6; box-shadow: 0 0 10px rgba(155,89,182,0.3); }
+.card.epic .card-cost { background: #8e44ad; }
+.card.legendary {
+  border-color: #f39c12;
+  box-shadow: 0 0 15px rgba(243,156,18,0.4);
+  animation: legendary-glow 2s ease-in-out infinite;
+}
+.card.legendary .card-cost { background: #e67e22; }
+@keyframes legendary-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(243,156,18,0.4); }
+  50% { box-shadow: 0 0 25px rgba(243,156,18,0.7); }
+}
+
+/* Card type colors */
+.card.attack .card-value { color: #e74c3c; }
+.card.heal .card-value { color: #2ecc71; }
+.card.passive .card-value { color: #f39c12; }
+.card.utility .card-value { color: #3498db; }
+.card.risk .card-value { color: #9b59b6; }
+
+/* === END TURN BUTTON === */
+.end-turn-btn {
+  position: absolute;
+  right: 24px;
+  bottom: 190px;
+  background: linear-gradient(135deg, #2c3e50, #1a252f);
+  border: 1px solid #4a4a6a;
+  color: #ccc;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.end-turn-btn:hover {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  border-color: #667eea;
+  color: #fff;
+}
+
+/* === LAYOUT CONTAINER === */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.battle-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Tooltip hint */
+.tooltip-hint {
+  position: absolute;
+  bottom: 186px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #666;
+  background: rgba(15,15,26,0.8);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<div class="game-container">
+  <!-- TOP RESOURCE BAR (GLB01) -->
+  <div class="resource-bar">
+    <div class="resource-item">
+      <div class="resource-icon funds-icon">$</div>
+      <span>78</span>
+      <span style="color:#666">/100</span>
+    </div>
+    <div class="resource-item">
+      <div class="resource-icon burn-icon">🔥</div>
+      <span style="color:#e74c3c">-3/turn</span>
+    </div>
+    <div class="resource-item">
+      <span class="stage-badge">SERIES A</span>
+    </div>
+    <div class="resource-item">
+      <div class="resource-icon focus-icon">⚡</div>
+      <span>3</span>
+      <span style="color:#666">/3</span>
+    </div>
+    <div class="deck-info">
+      <span>🂠 12</span>
+      <span style="color:#444"> | </span>
+      <span>🗑 5</span>
+    </div>
+  </div>
+
+  <!-- DANGER GAUGE (PRD Section 1) -->
+  <div class="danger-gauge-container">
+    <div class="danger-gauge">
+      <div class="danger-fill"></div>
+    </div>
+    <div class="danger-label">⚠ DANGER 50% — Talent War</div>
+  </div>
+
+  <!-- BATTLE AREA -->
+  <div class="battle-area">
+    <!-- COMBAT LOG (GLB04) -->
+    <div class="combat-log">
+      <div class="log-entry damage">💀 금리 인상이 12 데미지!</div>
+      <div class="log-entry heal">💰 패시브 수익 +5</div>
+      <div class="log-entry buff">🛡 법무 대응으로 8 방어</div>
+      <div class="log-entry debbuff">⚠ 규제 체크 발동</div>
+      <div class="log-entry damage">🔥 Burn Rate -3</div>
+      <div class="log-entry">카드 5장 드로우</div>
+      <div class="log-entry heal">💰 시드 펀딩 +15</div>
+      <div class="log-entry buff">🚀 바이럴 마케팅 발동</div>
+    </div>
+
+    <!-- ENEMY PANEL (GLB02) -->
+    <div class="enemy-panel">
+      <div class="enemy-aura"></div>
+      <div class="enemy-body">🏦</div>
+      <div class="enemy-info">
+        <div class="enemy-name">글로벌 금리 인상</div>
+        <div class="enemy-type">금융 위협 · ELITE</div>
+        <div class="enemy-hp-bar">
+          <div class="enemy-hp-fill"></div>
+        </div>
+        <div class="enemy-hp-text">65 / 100</div>
+
+        <!-- Next attack intent (ENM02) -->
+        <div class="intent">
+          <span class="intent-icon">⚔</span>
+          <span class="intent-text">다음:</span>
+          <span class="intent-damage">자금 경색 15</span>
+        </div>
+
+        <!-- Enemy buffs -->
+        <div class="enemy-buffs">
+          <div class="buff-badge" title="회복량 50% 삭감">📉</div>
+          <div class="buff-badge" title="매 3턴 강화">⏰</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYER STATUS (GLB09 + STS06) -->
+    <div class="player-status">
+      <div class="status-title">상태 이상</div>
+      <div class="status-item">
+        <span class="status-icon">🔒</span>
+        <span class="status-name">자금 조달 동결</span>
+        <span class="status-turns">2턴</span>
+      </div>
+      <div class="status-item">
+        <span class="status-icon">📉</span>
+        <span class="status-name">인재 유출</span>
+        <span class="status-turns">3턴</span>
+      </div>
+      <div class="shield-display">
+        <span class="shield-icon">🛡</span>
+        <span class="shield-value">8</span>
+        <span style="font-size:10px;color:#666;margin-left:4px">방어</span>
+      </div>
+    </div>
+
+    <!-- END TURN BUTTON -->
+    <button class="end-turn-btn">턴 종료 ▶</button>
+    <div class="tooltip-hint">카드를 클릭하여 사용</div>
+  </div>
+
+  <!-- PLAYER HAND (GLB03) -->
+  <div class="hand-area">
+    <!-- Card 1: Attack - common -->
+    <div class="card common attack">
+      <div class="card-cost">1</div>
+      <div class="card-type-icon">⚔</div>
+      <div class="card-name">제품 출시</div>
+      <div class="card-desc">적에게 피해</div>
+      <div class="card-value">8</div>
+    </div>
+
+    <!-- Card 2: Attack - rare -->
+    <div class="card rare attack">
+      <div class="card-cost">2</div>
+      <div class="card-type-icon">🚀</div>
+      <div class="card-name">스케일업</div>
+      <div class="card-desc">강력한 피해</div>
+      <div class="card-value">15</div>
+    </div>
+
+    <!-- Card 3: Heal -->
+    <div class="card common heal">
+      <div class="card-cost">1</div>
+      <div class="card-type-icon">💰</div>
+      <div class="card-name">시드 펀딩</div>
+      <div class="card-desc">자본금 회복</div>
+      <div class="card-value">+8</div>
+    </div>
+
+    <!-- Card 4: Utility -->
+    <div class="card common utility">
+      <div class="card-cost">1</div>
+      <div class="card-type-icon">🛡</div>
+      <div class="card-name">법무 대응</div>
+      <div class="card-desc">방어 획득</div>
+      <div class="card-value">+6</div>
+    </div>
+
+    <!-- Card 5: Passive - epic -->
+    <div class="card epic passive">
+      <div class="card-cost">1</div>
+      <div class="card-type-icon">📊</div>
+      <div class="card-name">SaaS 구독</div>
+      <div class="card-desc">매 턴 +3 수익</div>
+      <div class="card-value">♻</div>
+    </div>
+
+    <!-- Card 6: Risk - legendary -->
+    <div class="card legendary risk">
+      <div class="card-cost">0</div>
+      <div class="card-type-icon">🎰</div>
+      <div class="card-name">올인 베팅</div>
+      <div class="card-desc">50% 25뎀 / 50% -15HP</div>
+      <div class="card-value">?</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
