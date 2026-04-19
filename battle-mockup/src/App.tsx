@@ -97,16 +97,16 @@ function GameRouter() {
   const combat = useCombatStore()
 
   useEffect(() => {
-    if (combat.phase === 'victory') {
+    if (combat.phase === 'victory' && game.screen === 'battle') {
       const timer = setTimeout(() => game.goToReward(), 1500)
       return () => clearTimeout(timer)
     }
-    if (combat.phase === 'defeat') {
+    if (combat.phase === 'defeat' && game.screen === 'battle') {
       deleteSave() // 패배 시 세이브 삭제
       const timer = setTimeout(() => game.goToResult(false), 1500)
       return () => clearTimeout(timer)
     }
-  }, [combat.phase])
+  }, [combat.phase, game.screen])
 
   const renderScreen = () => {
     switch (game.screen) {
