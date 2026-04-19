@@ -191,6 +191,12 @@ export default function BattleScreen() {
 
   // 전투 시작
   useEffect(() => {
+    // 이전 전투의 전체화면 연출 레이어가 새 전투에 남지 않도록 초기화
+    setShowVictoryEffect(false)
+    setShowDefeatEffect(false)
+    setShowPhaseTransition(false)
+    setTurnTransition(null)
+
     const node = game.getCurrentNode()
     const enemyId = node?.enemyId || 'series_a'
     combat.startBattle(enemyId)
