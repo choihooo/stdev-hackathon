@@ -15,12 +15,19 @@ import ResultScreen from './components/ResultScreen'
 import './App.css'
 
 function ScreenTransition({ screen, children }: { screen: string; children: React.ReactNode }) {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayText, setOverlayText] = useState('')
   const prevScreen = useRef(screen)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
+    // 이전 타이머 정리
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+
     if (prevScreen.current !== screen) {
       // 전환 오버레이 텍스트 결정
       let text = ''
@@ -31,19 +38,28 @@ function ScreenTransition({ screen, children }: { screen: string; children: Reac
       if (text) {
         setOverlayText(text)
         setShowOverlay(true)
+      } else {
+        setShowOverlay(false)
       }
 
       setVisible(false)
-      const timer = setTimeout(() => {
-        if (text) {
-          setTimeout(() => setShowOverlay(false), 400)
-        }
+      prevScreen.current = screen
+
+      timerRef.current = setTimeout(() => {
+        setShowOverlay(false)
         setVisible(true)
-        prevScreen.current = screen
+        timerRef.current = null
       }, 300)
-      return () => clearTimeout(timer)
     } else {
       setVisible(true)
+      setShowOverlay(false)
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
     }
   }, [screen])
 
@@ -55,6 +71,7 @@ function ScreenTransition({ screen, children }: { screen: string; children: Reac
           background: 'rgba(0,0,0,0.9)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           animation: 'fadeOut 0.4s ease-out 0.2s forwards',
+          pointerEvents: 'none',
         }}>
           <div style={{ fontSize: '48px', fontWeight: 900, color: '#e8e8f0' }}>
             {overlayText}
@@ -62,11 +79,11 @@ function ScreenTransition({ screen, children }: { screen: string; children: Reac
         </div>
       )}
       <div
-        className="screen-transition"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(8px)',
           transition: 'opacity 300ms ease-out, transform 300ms ease-out',
+          pointerEvents: visible ? 'auto' : 'none',
         }}
       >
         {children}
