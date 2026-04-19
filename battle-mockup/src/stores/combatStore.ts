@@ -219,7 +219,11 @@ export const useCombatStore = create<CombatState>((set, get) => ({
       const focus = usePlayerStore.getState().focus
       const canPlay = hand.some((c) => c.cost <= focus)
       if (!canPlay && hand.length > 0) {
-        useToastStore.getState().showToast('사용 가능한 카드가 없습니다', 'info')
+        if (focus === 0) {
+          useToastStore.getState().showToast('Focus를 모두 사용했습니다', 'warning')
+        } else {
+          useToastStore.getState().showToast('사용 가능한 카드가 없습니다', 'info')
+        }
         setTimeout(() => {
           if (get().phase === 'player_turn') {
             get().endTurn()
